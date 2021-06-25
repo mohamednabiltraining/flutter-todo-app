@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app_mon/ui/EditTask/EditTask.dart';
 import 'package:todo_app_mon/ui/home/HomeScreen.dart';
 import 'package:todo_app_mon/ui/home/database/MyDataBase.dart';
 
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget{
         )
       ),
       routes: {
-        HomeScreen.ROUTE_NAME : (context)=>HomeScreen()
+        HomeScreen.ROUTE_NAME : (context)=>HomeScreen(),
+        EditTask.ROUTE_NAME: (context)=>EditTask()
       },
       initialRoute: HomeScreen.ROUTE_NAME,
     );

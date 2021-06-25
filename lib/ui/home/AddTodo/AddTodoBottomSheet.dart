@@ -12,6 +12,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
   String title='';
   String content ='';
   DateTime date = null;
+  bool titleError=false,contentError=false,dateError=false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +27,31 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           ),
           TextField(
             onChanged: (newText){
+              if(!newText.isEmpty){
+                this.setState(() {
+                  titleError=false;
+                  print('in if statement');
+                });
+              }
               title = newText;
             },
-            decoration: InputDecoration(labelText: 'Title',
+            decoration: InputDecoration(
+                errorText:titleError?'Please enter a valid title':null,
+                labelText: 'Title',
             contentPadding:EdgeInsets.all(8)),
           ),
           TextField(
             maxLines: 4,
             minLines: 4,
             decoration: InputDecoration(labelText: 'content',
+                errorText: contentError?'Please enter a valid content':null,
                 contentPadding:EdgeInsets.all(8)),
             onChanged: (newText){
+              if(!newText.isEmpty){
+                this.setState(() {
+                  contentError=false;
+                });
+              }
               content = newText;
             },
           ),
@@ -47,7 +62,8 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
               child: date  ==null?
-              Text('select Date',textAlign: TextAlign.start,):
+              Text('select Date',textAlign: TextAlign.start,
+                style: TextStyle(color: dateError?Colors.red:Colors.black),):
                   Text(date.toString())
             ),
           ),
@@ -60,22 +76,46 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
     );
   }
   void addTodoItem()async{
-    //Todo: validation input fields
-    if(title.isEmpty){
-      // show error message you should enter title
-    }
+     if(!valid()) return;
     Todo todo = Todo(title:title,content:content,dateTime:date);
     var box = await Hive.openBox<Todo>(Todo.BOX_NAME);
     box.add(todo);
     Navigator.pop(context);
 
   }
+  bool valid(){
+    bool valid= true;
+    if(title.isEmpty){
+      this.setState(() {
+        titleError=true;
+        valid=false;
+      });
+    }
+    if(content.isEmpty){
+      this.setState(() {
+        contentError=true;
+        valid=false;
+      });
+    }
+    if(date==null){
+      this.setState(() {
+        dateError=true;
+        valid=false;
+      });
+    }
+    return valid;
+  }
   void choosDateForTodo()async{
     var choosenDate = await showDatePicker(context: context,
         initialDate: DateTime.now(),
         firstDate:DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)));
-    date  = choosenDate;
+    this.setState(() {
+      date  = choosenDate;
+      if(date!=null){
+        dateError=false;
+      }
+    });
 
   }
 }
