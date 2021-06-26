@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app_mon/providers/ThemeProvider.dart';
 import 'package:todo_app_mon/ui/EditTask/EditTask.dart';
 import 'package:todo_app_mon/ui/home/HomeScreen.dart';
 import 'package:todo_app_mon/ui/home/database/MyDataBase.dart';
@@ -18,19 +20,24 @@ class MyThemeData{
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor:MyThemeData.primaryColor,
-        accentColor: MyThemeData.colorAccent,
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: MyThemeData.primaryColor,
-        )
-      ),
-      routes: {
-        HomeScreen.ROUTE_NAME : (context)=>HomeScreen(),
-        EditTask.ROUTE_NAME: (context)=>EditTask()
+
+    return ChangeNotifierProvider(
+      create: (context)=>ThemeProvider(),
+      builder: (context,builder){
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        return  MaterialApp(
+          title: 'Route Todo',
+          initialRoute: HomeScreen.ROUTE_NAME,
+          themeMode:themeProvider.themMode,
+          theme: MyThemes.lightTheme,
+          darkTheme: MyThemes.darkTheme,
+          routes: {
+            HomeScreen.ROUTE_NAME: (context)=>HomeScreen(),
+            EditTask.ROUTE_NAME: (context)=>EditTask()
+          },
+        );
+
       },
-      initialRoute: HomeScreen.ROUTE_NAME,
     );
   }
 }
