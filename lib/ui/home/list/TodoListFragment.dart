@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_app_mon/main.dart';
+import 'package:todo_app_mon/ui/EditTask/EditTask.dart';
 import 'package:todo_app_mon/ui/home/database/modal/Todo.dart';
 import 'package:todo_app_mon/ui/home/list/TodoItem.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -70,7 +71,7 @@ class _TodoListFragmentState extends State<TodoListFragment> {
                   ? ListView.builder(
                       itemCount: todosList.length,
                       itemBuilder: (context, index) {
-                        return TodoItem(todosList[index], onDeleteTask);
+                        return TodoItem(todosList[index], onDeleteTask,onItemCheck,onItemPressed);
                       })
                   : Center(child: Text('no todos for this day')),
             )
@@ -89,6 +90,15 @@ class _TodoListFragmentState extends State<TodoListFragment> {
 
 //    box.putAt(index, Todo(a;lksdmf;laksmfd))
   }
+  void onItemCheck(Todo item) async {
+    print('item before change its state is ${item.isDone}');
+    var box= await Hive.openBox<Todo>(Todo.BOX_NAME);
+    int index =box.values.toList().indexOf(item);
+    item.isDone=item.isDone?false:true;
+    box.putAt(index, item);
+    print(box.values.toList().elementAt(index).isDone);
+   getAllTodosFromBox();
+  }
 
   @override
   void initState() {
@@ -96,7 +106,12 @@ class _TodoListFragmentState extends State<TodoListFragment> {
     super.initState();
     getAllTodosFromBox();
   }
-
+  onItemPressed(Todo item,BuildContext context)async{
+    var box= await Hive.openBox<Todo>(Todo.BOX_NAME);
+    box.close();
+    print(box.isOpen);
+    Navigator.of(context).pushNamed(EditTask.ROUTE_NAME,arguments:item);
+  }
   void getAllTodosFromBox() async {
     var box = await Hive.openBox<Todo>(Todo.BOX_NAME);
     setState(() {
