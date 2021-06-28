@@ -24,7 +24,6 @@ class _TodoListFragmentState extends State<TodoListFragment> {
         getAllTodosFromBox();
       },
       child: Container(
-        color: MyThemeData.colorAccent,
         child: Column(
           children: [
             TableCalendar(
