@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app_mon/providers/LocalizationProvider.dart';
 import 'package:todo_app_mon/providers/ThemeProvider.dart';
 import 'package:todo_app_mon/ui/EditTask/EditTask.dart';
 import 'package:todo_app_mon/ui/home/HomeScreen.dart';
 import 'package:todo_app_mon/ui/home/database/MyDataBase.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   initDataBase();
@@ -37,18 +40,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
      return ChangeNotifierProvider(
-       create: (context)=>ThemeProvider(),
+       create: (context)=>LocalizationProvider(),
        builder: (context,widget){
-         final themeProvider = Provider.of<ThemeProvider>(context);
-         return MaterialApp(
-           themeMode: themeProvider.themeMode,
-           theme: MyThemeData.lightTheme,
-           darkTheme: MyThemeData.darkTheme,
-           routes: {
-             HomeScreen.ROUTE_NAME: (context) => HomeScreen(),
-             EditTask.ROUTE_NAME: (context) => EditTask()
+         return ChangeNotifierProvider(
+           create: (context)=>ThemeProvider(),
+           builder: (context,widget){
+             final themeProvider = Provider.of<ThemeProvider>(context);
+             final localeProvider = Provider.of<LocalizationProvider>(context);
+             return MaterialApp(
+               localizationsDelegates: [
+                 AppLocalizations.delegate,
+                 GlobalMaterialLocalizations.delegate,
+                 GlobalWidgetsLocalizations.delegate,
+                 GlobalCupertinoLocalizations.delegate,
+               ],
+               supportedLocales:AppLocalizations.supportedLocales,
+               locale: Locale(localeProvider.locale,''),
+               themeMode: themeProvider.themeMode,
+               theme: MyThemeData.lightTheme,
+               darkTheme: MyThemeData.darkTheme,
+               routes: {
+                 HomeScreen.ROUTE_NAME: (context) => HomeScreen(),
+                 EditTask.ROUTE_NAME: (context) => EditTask()
+               },
+               initialRoute: HomeScreen.ROUTE_NAME,
+             );
            },
-           initialRoute: HomeScreen.ROUTE_NAME,
          );
        },
      );

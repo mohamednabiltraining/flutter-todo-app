@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app_mon/ui/home/AddTodo/AddTodoBottomSheet.dart';
 import 'package:todo_app_mon/ui/home/list/TodoListFragment.dart';
 import 'package:todo_app_mon/ui/home/settings/SettingsFragment.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   static final ROUTE_NAME ='home';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
         toolbarHeight: 120,
-        title: Text('Route Todo List'),
+        title: Text(AppLocalizations.of(context).appTitle),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),

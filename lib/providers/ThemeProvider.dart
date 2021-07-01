@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier{
+  //Todo:save current selected Theme in sharedPreferences
+
   ThemeMode themeMode = ThemeMode.dark;
 
   bool isDarkModeEnabled(){
